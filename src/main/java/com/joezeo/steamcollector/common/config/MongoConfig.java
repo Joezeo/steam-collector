@@ -20,23 +20,25 @@ import java.util.List;
  */
 @Configuration
 public class MongoConfig {
-    @Value("server.data.mongo.uri")
+    @Value("${server.data.mongo.uri}")
     private String uri;
-    @Value("server.data.mongo.address")
+    @Value("${server.data.mongo.address}")
     private String address;
-    @Value("server.data.mongo.verify")
+    @Value("${server.data.mongo.verify}")
     private boolean verify;
-    @Value("server.data.mongo.keepalive")
+    @Value("${server.data.mongo.keepalive}")
     private boolean keepalive;
-    @Value("server.data.mongo.dbname")
+    @Value("${server.data.mongo.useuri}")
+    private boolean useuri;
+    @Value("${server.data.mongo.dbname}")
     private String dbname;
-    @Value("server.data.mongo.username")
+    @Value("${server.data.mongo.username}")
     private String username;
-    @Value("server.data.mongo.password")
+    @Value("${server.data.mongo.password}")
     private String password;
-    @Value("server.data.mongo.host.connections.count")
+    @Value("${server.data.mongo.host.connections.count}")
     private Integer connectionCount;
-    @Value("server.data.mongo.max.wait.time")
+    @Value("${server.data.mongo.max.wait.time}")
     private Integer maxWaitTime;
 
     @Bean("mongoClientOptions")
@@ -55,7 +57,7 @@ public class MongoConfig {
     @Bean("mongoClient")
     public MongoClient mongoClient(@Autowired MongoClientOptions clientOptions) {
         if (verify) {
-            if (uri == null) {
+            if (!useuri) {
                 final List<ServerAddress> addressList = analysisAddress(address);
                 MongoCredential credentials = MongoCredential.createCredential(username, dbname, password.toCharArray());
                 List<MongoCredential> credentialsList = new ArrayList<>();
