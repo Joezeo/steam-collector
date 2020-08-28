@@ -9,16 +9,19 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.joezeo</groupId>
-    <artifactId>steamlookup</artifactId>
+    <artifactId>steamcollector</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>steamlookup</name>
+    <name>steamcollector</name>
     <description>use web spider to collect steam store data.</description>
 
     <properties>
         <java.version>1.8</java.version>
+        <okhttp3.version>4.2.2</okhttp3.version>
+        <fastjson.version>1.2.62</fastjson.version>
     </properties>
 
     <dependencies>
+        <!--SpringBoot-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -27,22 +30,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web-services</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 
