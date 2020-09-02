@@ -1,6 +1,7 @@
 package com.joezeo.steamcollector.common.config;
 
 import com.mongodb.*;
+import com.mongodb.client.MongoDatabase;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,14 +78,21 @@ public class MongoConfig {
     public Datastore datastore(@Autowired MongoClient mongoClient) {
         Morphia morphia = new Morphia();
         Datastore ads = morphia.createDatastore(mongoClient, dbname);
-        //TODO: complete the ads property
+        ads.ensureIndexes(); // 建立索引
         return ads;
     }
 
     /* 解析字符串生成mongo address */
-    private List<ServerAddress> analysisAddress(String address) {
-        List<ServerAddress> serverAddresses = new ArrayList<>();
-        //TODO: complete the method
-        return serverAddresses;
+    private List<ServerAddress> analysisAddress(String addressStr) {
+        String[] allStr = addressStr.split(",") ;
+        List<ServerAddress> allAddress = new ArrayList<>() ;
+        for(String _address : allStr){
+            String[] _hp = _address.trim().split(":") ;
+            String host = _hp[0] ;
+            int port = Integer.parseInt(_hp[1]) ;
+            final ServerAddress address = new ServerAddress(host , port);
+            allAddress.add(address) ;
+        }
+        return allAddress ;
     }
 }
