@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @email joezane.cn@gmail.com
  * @date 2020/9/2 18:32
  */
-public abstract class BaseDao<K,T extends IDBDocument<K>> {
+public abstract class BaseDao<K,T extends DBDocument<K>> {
     {
         of();
     }
@@ -34,14 +34,13 @@ public abstract class BaseDao<K,T extends IDBDocument<K>> {
     }
 
     /** add */
-    public abstract boolean add(IDBDocument<K> document);
+    public abstract boolean add(DBDocument<K> document);
 
     /** delete */
-    public abstract boolean delete(IDBDocument<K> document);
+    public abstract boolean delete(K id);
 
     /** update */
-
-    protected abstract boolean update(IDBDocument<K> document);
+    public abstract boolean update(DBDocument<K> document);
 
     protected UpdateOperations<T> ops() {
         return datastore.createUpdateOperations(clazz);
@@ -56,7 +55,7 @@ public abstract class BaseDao<K,T extends IDBDocument<K>> {
     }
 
     /** query */
-    public abstract IDBDocument<K> query(K id);
+    public abstract DBDocument<K> query(K id);
 
     protected Query<T> query() {
         return datastore.createQuery(clazz);
