@@ -1,8 +1,8 @@
 package com.joezeo.steamcollector.common.mongo;
 
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.query.Query;
-import org.mongodb.morphia.query.UpdateOperations;
+import dev.morphia.Datastore;
+import dev.morphia.query.Query;
+import dev.morphia.query.UpdateOperations;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -58,6 +58,6 @@ public abstract class BaseDao<K,T extends DBDocument<K>> {
     public abstract DBDocument<K> query(K id);
 
     protected Query<T> query() {
-        return datastore.createQuery(clazz);
+        return datastore.find(clazz);
     }
 }

@@ -1,9 +1,10 @@
 package com.joezeo.steamcollector.common.config;
 
 import com.mongodb.*;
-import com.mongodb.client.MongoDatabase;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Morphia;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import dev.morphia.Datastore;
+import dev.morphia.Morphia;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,8 +28,6 @@ public class MongoConfig {
     private String address;
     @Value("${server.data.mongo.verify}")
     private boolean verify;
-    @Value("${server.data.mongo.keepalive}")
-    private boolean keepalive;
     @Value("${server.data.mongo.useuri}")
     private boolean useuri;
     @Value("${server.data.mongo.dbname}")
@@ -42,42 +41,25 @@ public class MongoConfig {
     @Value("${server.data.mongo.max.wait.time}")
     private Integer maxWaitTime;
 
-    @Bean("mongoClientOptions")
-    public MongoClientOptions mongoClientOptions() {
-        final MongoClientOptions.Builder optionBuilder = new MongoClientOptions.Builder();
-        optionBuilder.socketKeepAlive(keepalive);
-        optionBuilder.connectionsPerHost(connectionCount);
-        optionBuilder.maxWaitTime(maxWaitTime);
-        optionBuilder.readPreference(ReadPreference.primary());// 最近优先策略
-        optionBuilder.threadsAllowedToBlockForConnectionMultiplier(50);
-        optionBuilder.writeConcern(WriteConcern.UNACKNOWLEDGED);
-        optionBuilder.readPreference(ReadPreference.primary());
-        return optionBuilder.build();
-    }
-
     @Bean("mongoClient")
-    public MongoClient mongoClient(@Autowired MongoClientOptions clientOptions) {
+    public MongoClient mongoClient() {
         if (verify) {
             if (!useuri) {
                 final List<ServerAddress> addressList = analysisAddress(address);
                 MongoCredential credentials = MongoCredential.createCredential(username, dbname, password.toCharArray());
-                List<MongoCredential> credentialsList = new ArrayList<>();
-                credentialsList.add(credentials);
-                return new MongoClient(addressList, credentialsList, clientOptions);
+                return MongoClients.create();
             } else {
-                MongoClientURI connStr = new MongoClientURI(uri);
-                return new MongoClient(connStr);
+                return MongoClients.create();
             }
         } else {
             final List<ServerAddress> addressList = analysisAddress(address);
-            return new MongoClient(addressList, clientOptions);
+            return MongoClients.create();
         }
     }
 
     @Bean("datastore")
     public Datastore datastore(@Autowired MongoClient mongoClient) {
-        Morphia morphia = new Morphia();
-        Datastore ads = morphia.createDatastore(mongoClient, dbname);
+        Datastore ads = Morphia.createDatastore(mongoClient, dbname);
         ads.ensureIndexes(); // 建立索引
         return ads;
     }
