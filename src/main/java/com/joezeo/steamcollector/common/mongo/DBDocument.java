@@ -1,6 +1,6 @@
 package com.joezeo.steamcollector.common.mongo;
 
-import org.mongodb.morphia.annotations.Id;
+import dev.morphia.annotations.Id;
 
 import java.io.Serializable;
 

@@ -2,7 +2,8 @@ package com.joezeo.steamcollector.common.mongo;
 
 import dev.morphia.Datastore;
 import dev.morphia.query.Query;
-import dev.morphia.query.UpdateOperations;
+import dev.morphia.query.experimental.filters.Filter;
+import dev.morphia.query.experimental.filters.Filters;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -34,25 +35,32 @@ public abstract class BaseDao<K,T extends DBDocument<K>> {
     }
 
     /** add */
-    public abstract boolean add(DBDocument<K> document);
+    public boolean add(DBDocument<K> document) {
+        try {
+            this.datastore.save(document);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 
     /** delete */
-    public abstract boolean delete(K id);
+    public boolean delete(K id) {
+        try {
+            Query<T> query = query();
+            Filter filter = Filters.eq("_id", id);
+            query.filter(filter);
+            query.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 
     /** update */
     public abstract boolean update(DBDocument<K> document);
-
-    protected UpdateOperations<T> ops() {
-        return datastore.createUpdateOperations(clazz);
-    }
-
-    protected boolean up(UpdateOperations<T> ops) {
-        return false;
-    }
-
-    protected boolean safeUp(UpdateOperations<T> ops) {
-        return false;
-    }
 
     /** query */
     public abstract DBDocument<K> query(K id);
