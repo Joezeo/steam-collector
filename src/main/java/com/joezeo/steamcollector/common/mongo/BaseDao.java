@@ -4,7 +4,13 @@ import dev.morphia.Datastore;
 import dev.morphia.query.Query;
 import dev.morphia.query.experimental.filters.Filter;
 import dev.morphia.query.experimental.filters.Filters;
+import dev.morphia.query.experimental.updates.UpdateOperator;
+import dev.morphia.query.experimental.updates.UpdateOperators;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Dao类对象的基类
@@ -60,10 +66,40 @@ public abstract class BaseDao<K,T extends DBDocument<K>> {
     }
 
     /** update */
-    public abstract boolean update(DBDocument<K> document);
+    public boolean update(DBDocument<K> document) {
+        try {
+            Query<T> query = query();
+            Filter filter = Filters.eq("_id", document.getId());
+            query.filter(filter);
+
+            Class<? extends DBDocument> dClass = document.getClass();
+            List<UpdateOperator> operators = new ArrayList<>();
+            Arrays.stream(dClass.getDeclaredFields()).forEach(field -> {
+                field.setAccessible(true);
+                String fieldName = field.getName();
+                try {
+                    Object val = field.get(document);
+                    UpdateOperator operator = UpdateOperators.set(fieldName, val);
+                    operators.add(operator);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("<错误> 反射设置值发生错误，更新失败");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 
     /** query */
-    public abstract DBDocument<K> query(K id);
+    public DBDocument<K> query(K id) {
+        Query<T> query = query();
+        Filter filter = Filters.eq("_id", id);
+        query.filter(filter);
+        return query.first();
+    }
 
     protected Query<T> query() {
         return datastore.find(clazz);

@@ -20,6 +20,7 @@
         <okhttp3.version>4.2.2</okhttp3.version>
         <fastjson.version>1.2.62</fastjson.version>
         <jsoup.version>1.12.1</jsoup.version>
+        <lombok.version>1.18.10</lombok.version>
     </properties>
 
     <dependencies>
@@ -34,6 +35,11 @@
             <optional>true</optional>
         </dependency>
         <!--SpringBoot end-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
         <dependency>
             <groupId>dev.morphia.morphia</groupId>
             <artifactId>morphia-core</artifactId>
