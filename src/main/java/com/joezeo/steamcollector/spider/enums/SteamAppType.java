@@ -4,13 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum SteamAppType {
+    /*游戏*/
     GAME(1, "game"),
+    /*软件*/
     SOFTWARE(2, "software"),
+    /*DLC*/
     DLC(3, "dlc"),
+    /*Demo*/
     DEMO(4, "demo"),
+    /*捆绑包*/
     BUNDLE(5, "bundle"),
+    /*游戏原声*/
     SOUND(6, "sound"),
-    SUB(7, "sub") // 礼包
+    /*礼包*/
+    SUB(7, "sub")
     ;
 
     private Integer index;

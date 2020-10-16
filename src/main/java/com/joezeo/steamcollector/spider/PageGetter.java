@@ -33,7 +33,7 @@ public class PageGetter {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 log.error("爬取网页失败 - 可能等待时间过长 - 将再次重试：" + url);
-                urlCollector.add2Fail(url, type);
+                urlCollector.addFailure(url, type);
             }
 
             @Override

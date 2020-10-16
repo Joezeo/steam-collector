@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,7 +23,8 @@ public class FailureUrlCollector {
         DLC_URL("dlc", new ConcurrentHashMap<>()),
         DEMO_URL("demo", new ConcurrentHashMap<>()),
         SOUND_URL("sound", new ConcurrentHashMap<>()),
-        SUB_URL("sub", new ConcurrentHashMap<>());
+        SUB_URL("sub", new ConcurrentHashMap<>())
+        ;
         private String type;
         private Map<String, Integer> collector;
 
@@ -51,12 +51,12 @@ public class FailureUrlCollector {
         }
     }
 
-    public void add2Fail(String url, String type) {
+    public void addFailure(String url, String type) {
         Map<String, Integer> collector = UrlType.typeOf(type).getCollector();
         if (collector.containsKey(url)) {
             Integer count = collector.get(url);
             if (count > 5) { // 重试超过五次就不再重试，将失败的url存入数据库中
-                removeFail(url, type);
+                removeFailure(url, type);
                 writeDB(url, type);
                 return;
             }
@@ -66,7 +66,7 @@ public class FailureUrlCollector {
         }
     }
 
-    private void removeFail(String url, String type) {
+    private void removeFailure(String url, String type) {
         Map<String, Integer> collector = UrlType.typeOf(type).getCollector();
         if (collector.containsKey(url)) {
             if ("game".equals(type)) {
