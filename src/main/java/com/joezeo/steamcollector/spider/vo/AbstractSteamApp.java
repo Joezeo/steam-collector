@@ -16,6 +16,7 @@ import org.bson.types.ObjectId;
 @Data
 @SuppressWarnings("all")
 public class AbstractSteamApp extends DBVersionDocument<ObjectId> {
+
     private static final long serialVersionUID = 2982843232445271189L;
 
     /**

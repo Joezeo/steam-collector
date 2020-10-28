@@ -10,9 +10,10 @@ public class TimeUtils {
 
     /**
      * 获取当前日期的字符串 格式 yyyy-MM-dd HH:mm:ss
+     *
      * @return
      */
-    public static String getCurrentDateStr(){
+    public static String getCurrentDateStr() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return format.format(new Date(System.currentTimeMillis()));
     }
@@ -148,23 +149,25 @@ public class TimeUtils {
 
     /**
      * 获取当前时间7天前的零点时间戳
+     *
      * @return
      * @throws ParseException
      */
     public static Long getZeroAtSevenDaysAgo() throws ParseException {
         long timestampAtZero = getTimestampAtZero();
 
-        return timestampAtZero-(7*24*60*60*1000);
+        return timestampAtZero - (7 * 24 * 60 * 60 * 1000);
     }
 
     /**
      * 获取当前时间30天前零点时间戳
+     *
      * @return
      * @throws ParseException
      */
     public static Long getZeroAtThirtyDaysAgo() throws ParseException {
         long timestampAtZero = getTimestampAtZero();
 
-        return timestampAtZero-(30*24*60*60*1000);
+        return timestampAtZero - (30 * 24 * 60 * 60 * 1000);
     }
 }
