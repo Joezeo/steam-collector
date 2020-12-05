@@ -1,4 +1,4 @@
-package com.joezeo.steamcollector.spider;
+package com.joezeo.steamcollector.spider.core;
 
 import com.joezeo.steamcollector.spider.enums.UrlType;
 import lombok.Data;
@@ -20,7 +20,8 @@ public class FailureUrlCollector {
         Map<String, Integer> collector = UrlType.typeOf(type).getCollector();
         if (collector.containsKey(url)) {
             Integer count = collector.get(url);
-            if (count > 5) { // 重试超过五次就不再重试，将失败的url存入数据库中
+            // 重试超过五次就不再重试，将失败的url存入数据库中
+            if (count > 5) {
                 removeFailure(url, type);
                 writeDB(url, type);
                 return;

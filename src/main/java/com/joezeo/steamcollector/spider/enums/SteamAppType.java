@@ -3,6 +3,9 @@ package com.joezeo.steamcollector.spider.enums;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author JoeZane
+ */
 public enum SteamAppType {
     /*游戏*/
     GAME(1, "game"),

@@ -42,7 +42,7 @@ public abstract class BaseDao<K,T extends DBDocument<K>> {
     }
 
     /** add */
-    public boolean add(DBDocument<K> document) {
+    public boolean save(DBDocument<K> document) {
         try {
             this.datastore.save(document);
         } catch (Exception e) {

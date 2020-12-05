@@ -1,30 +1,42 @@
-package com.joezeo.steamcollector.spider;
+package com.joezeo.steamcollector.spider.core;
 
 import com.joezeo.steamcollector.spider.enums.SpiderJob;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+/**
+ * 构造http请求获取页面信息
+ *
+ * @author JoeZane
+ */
 @Service
 @Slf4j
 public class PageGetter {
-    @Autowired
-    private OkHttpClient client4Steam;
-    @Autowired
-    private PageResolver pageResolver;
-    @Autowired
-    private FailureUrlCollector urlCollector;
+
+    private final OkHttpClient client4Steam;
+
+    private final PageResolver pageResolver;
+
+    private final FailureUrlCollector urlCollector;
+
+    public PageGetter(OkHttpClient client4Steam, PageResolver pageResolver, FailureUrlCollector urlCollector) {
+        this.client4Steam = client4Steam;
+        this.pageResolver = pageResolver;
+        this.urlCollector = urlCollector;
+    }
 
     public void spiderUrlAsyn(String url, String type, Integer appid, SpiderJob jobType) {
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36")
-                .addHeader("cookie", "birthtime=470678401") // 认证年龄
-                .addHeader("Accept-Language", "zh-CN,zh;q=0.9") // 设置语言
+                // 认证年龄
+                .addHeader("cookie", "birthtime=470678401")
+                // 设置语言
+                .addHeader("Accept-Language", "zh-CN,zh;q=0.9")
                 .get()
                 .build();
 
@@ -32,14 +44,14 @@ public class PageGetter {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                log.error("爬取网页失败 - 可能等待时间过长 - 将再次重试：" + url);
+                log.error("爬取网页失败： 可能等待时间过长，将再次重试 => " + url);
                 urlCollector.addFailure(url, type);
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String page = response.body().string();
-                System.out.println("获取页面成功 ： " + url);
+                log.info("获取页面成功 ： {}", url);
 
                 if (jobType == SpiderJob.INIT_URL_DATA) {
                     pageResolver.initOrCheckUrl(page, type);
@@ -60,8 +72,10 @@ public class PageGetter {
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36")
-                .addHeader("cookie", "birthtime=470678401") // 认证年龄
-                .addHeader("Accept-Language", "zh-CN,zh;q=0.9") // 设置语言
+                // 认证年龄
+                .addHeader("cookie", "birthtime=470678401")
+                // 设置语言
+                .addHeader("Accept-Language", "zh-CN,zh;q=0.9")
                 .get()
                 .build();
 

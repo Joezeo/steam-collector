@@ -64,7 +64,9 @@ public class MongoConfig {
         return ads;
     }
 
-    /* 解析字符串生成mongo address */
+    /**
+     *  解析字符串生成mongo address
+     *  */
     private List<ServerAddress> analysisAddress(String addressStr) {
         String[] allStr = addressStr.split(",") ;
         List<ServerAddress> allAddress = new ArrayList<>() ;

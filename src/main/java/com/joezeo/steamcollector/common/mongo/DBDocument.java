@@ -1,5 +1,6 @@
 package com.joezeo.steamcollector.common.mongo;
 
+import com.joezeo.steamcollector.common.pojo.AbstractPojo;
 import dev.morphia.annotations.Id;
 import lombok.Data;
 
@@ -16,7 +17,7 @@ import java.io.Serializable;
  * @date 2020/9/2 18:32
  */
 @Data
-public abstract class DBDocument<K> implements Serializable {
+public abstract class DBDocument<K> extends AbstractPojo implements Serializable{
     @Id
     private K id;
 }
