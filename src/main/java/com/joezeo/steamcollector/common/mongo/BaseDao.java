@@ -1,7 +1,6 @@
 package com.joezeo.steamcollector.common.mongo;
 
 import dev.morphia.Datastore;
-import dev.morphia.query.FindOptions;
 import dev.morphia.query.Query;
 import dev.morphia.query.experimental.filters.Filter;
 import dev.morphia.query.experimental.filters.Filters;
@@ -26,7 +25,7 @@ import java.util.List;
  */
 public abstract class BaseDao<K,T extends DBDocument<K>> {
     {
-        of();
+        classOf();
     }
 
     @Autowired
@@ -35,9 +34,9 @@ public abstract class BaseDao<K,T extends DBDocument<K>> {
     protected Class<T> clazz;
 
     /**please use @method:of(Class<T> clazz) in the override method to init the Document class*/
-    abstract protected void of();
+    abstract protected void classOf();
 
-    protected void of(Class<T> clazz) {
+    protected void classOf(Class<T> clazz) {
         this.clazz = clazz;
     }
 

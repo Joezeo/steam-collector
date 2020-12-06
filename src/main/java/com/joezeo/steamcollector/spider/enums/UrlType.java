@@ -91,6 +91,8 @@ public enum UrlType {
 
     /**
      * 特惠商品
+     *
+     * 注意：当天特惠商品的url应当和其他app分开存储
      */
     SPECIAL_URL(
             "special",

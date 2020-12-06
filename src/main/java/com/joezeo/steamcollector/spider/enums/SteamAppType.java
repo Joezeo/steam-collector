@@ -7,20 +7,24 @@ import java.util.List;
  * @author JoeZane
  */
 public enum SteamAppType {
-    /*游戏*/
+    /**游戏*/
     GAME(1, "game"),
-    /*软件*/
+    /**软件*/
     SOFTWARE(2, "software"),
-    /*DLC*/
+    /**DLC*/
     DLC(3, "dlc"),
-    /*Demo*/
+    /**Demo*/
     DEMO(4, "demo"),
-    /*捆绑包*/
+    /**捆绑包*/
     BUNDLE(5, "bundle"),
-    /*游戏原声*/
+    /**游戏原声*/
     SOUND(6, "sound"),
-    /*礼包*/
-    SUB(7, "sub")
+    /**礼包*/
+    SUB(7, "sub"),
+    /**视频*/
+    VIDEO(8, "video"),
+    /**模组*/
+    MODULE(9, "module")
     ;
 
     private Integer index;
@@ -41,7 +45,7 @@ public enum SteamAppType {
 
     public static String typeOf(Integer index) {
         for (SteamAppType typeEnum : SteamAppType.values()) {
-            if (typeEnum.getIndex() == index) {
+            if (typeEnum.getIndex().equals(index)) {
                 return typeEnum.getType();
             }
         }

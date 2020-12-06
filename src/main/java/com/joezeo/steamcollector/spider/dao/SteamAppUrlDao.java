@@ -1,4 +1,4 @@
-package com.joezeo.steamcollector.spider;
+package com.joezeo.steamcollector.spider.dao;
 
 import com.joezeo.steamcollector.common.mongo.BaseDao;
 import com.joezeo.steamcollector.spider.vo.SteamAppUrl;
@@ -14,18 +14,27 @@ import java.util.List;
  * @date 2020/12/5 16:00
  */
 @Repository
-public class SteamUrlDao extends BaseDao<ObjectId, SteamAppUrl> {
+public class SteamAppUrlDao extends BaseDao<ObjectId, SteamAppUrl> {
     @Override
-    protected void of() {
-        super.of(SteamAppUrl.class);
+    protected void classOf() {
+        super.classOf(SteamAppUrl.class);
     }
 
-    public List<SteamAppUrl> listOfAppid(int appid, String type) {
+    public List<SteamAppUrl> listOfAppidAndType(String appid, String type) {
         Query<SteamAppUrl> query = query();
         query.filter(
                 Filters.eq("appid", appid),
                 Filters.eq("type", type)
         );
         return query.iterator().toList();
+    }
+
+    public SteamAppUrl ofAppidAndType(String appid, String type) {
+        Query<SteamAppUrl> query = query();
+        query.filter(
+                Filters.eq("appid", appid),
+                Filters.eq("type", type)
+        );
+        return query.first();
     }
 }

@@ -1,12 +1,20 @@
 package com.joezeo.steamcollector.spider.core;
 
+import com.joezeo.steamcollector.spider.core.resolver.AppInfoResolver;
+import com.joezeo.steamcollector.spider.core.resolver.SearchingPageUrlResolver;
+import com.joezeo.steamcollector.spider.core.resolver.SpecialPriceResolver;
+import com.joezeo.steamcollector.spider.core.resolver.TotalPageResolver;
 import com.joezeo.steamcollector.spider.enums.SpiderJob;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 构造http请求获取页面信息
@@ -15,19 +23,20 @@ import java.io.IOException;
  */
 @Service
 @Slf4j
+@AllArgsConstructor
 public class PageGetter {
 
     private final OkHttpClient client4Steam;
 
-    private final PageResolver pageResolver;
-
     private final FailureUrlCollector urlCollector;
 
-    public PageGetter(OkHttpClient client4Steam, PageResolver pageResolver, FailureUrlCollector urlCollector) {
-        this.client4Steam = client4Steam;
-        this.pageResolver = pageResolver;
-        this.urlCollector = urlCollector;
-    }
+    private final TotalPageResolver totalPageResolver;
+
+    private final SearchingPageUrlResolver searchingPageUrlResolver;
+
+    private final AppInfoResolver appInfoResolver;
+
+    private final SpecialPriceResolver specialPriceResolver;
 
     public void spiderUrlAsyn(String url, String type, Integer appid, SpiderJob jobType) {
         Request request = new Request.Builder()
@@ -50,19 +59,33 @@ public class PageGetter {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String page = response.body().string();
+                String page = Objects.requireNonNull(response.body()).string();
                 log.info("获取页面成功 ： {}", url);
+                Map<String, Object> params = new HashMap<>();
 
-                if (jobType == SpiderJob.INIT_URL_DATA) {
-                    pageResolver.initOrCheckUrl(page, type);
-                } else if (jobType == SpiderJob.DAILY_CHECK_URL) {
-                    pageResolver.initOrCheckUrl(page, type);
-                } else if (jobType == SpiderJob.INIT_APP_INFO) {
-                    pageResolver.initOrCheckAppInfo(page, type, appid, url.lastIndexOf("/sub/") != -1);
-                } else if (jobType == SpiderJob.DAILY_CHECK_APP_INFO) {
-                    pageResolver.initOrCheckAppInfo(page, type, appid, url.lastIndexOf("/sub/") != -1);
-                } else if (jobType == SpiderJob.DAILY_SPIDE_SPECIAL_PRICE) {
-                    pageResolver.dailySpideSpecialPrice(url, page, appid);
+                switch (jobType) {
+                    case INIT_URL_DATA:
+                    case DAILY_CHECK_URL:
+                        params.put("type", type);
+                        searchingPageUrlResolver.resolve(page, params);
+                        break;
+
+                    case INIT_APP_INFO:
+                    case DAILY_CHECK_APP_INFO:
+                        params.put("type", type);
+                        params.put("appid", appid);
+                        params.put("isSub", url.lastIndexOf("/sub/") != -1);
+                        appInfoResolver.resolve(page, params);
+                        break;
+
+                    case DAILY_SPIDE_SPECIAL_PRICE:
+                        params.put("url", url);
+                        params.put("appid", appid);
+                        specialPriceResolver.resolve(page, params);
+                        break;
+
+                    default:
+                        break;
                 }
             }
         });
@@ -83,8 +106,7 @@ public class PageGetter {
         // 这里不能使用异步获取，因为这里获得的总页数在接下来的逻辑中是有用的
         try {
             Response response = call.execute();
-            int totalPage = pageResolver.resolvSteamTotalPage(response.body().string());
-            return totalPage;
+            return totalPageResolver.resolveNumber(Objects.requireNonNull(response.body()).string(), null);
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
