@@ -104,18 +104,18 @@ public enum UrlType {
     /**
      * steam app 类型
      */
-    private String type;
+    private final String type;
 
     /**
      * 通过steam搜索页面爬取所有软件的url
      * rootPage 及爬取的根网页
      */
-    private String rootPage;
+    private final String rootPage;
 
     /**
      * 爬取 app 信息失败时的失败 url 收集器
      */
-    private Map<String, Integer> collector;
+    private final Map<String, Integer> collector;
 
     UrlType(String type, String rootPage, Map<String, Integer> collector) {
         this.type = type;

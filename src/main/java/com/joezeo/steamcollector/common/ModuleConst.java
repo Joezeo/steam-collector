@@ -7,5 +7,5 @@ package com.joezeo.steamcollector.common;
  * @date 2020/11/28 23:26
  */
 public class ModuleConst {
-    public static final String BRANCH_MODULE = "/branch";
+    public static final String SPIDER_MODULE = "/spider";
 }

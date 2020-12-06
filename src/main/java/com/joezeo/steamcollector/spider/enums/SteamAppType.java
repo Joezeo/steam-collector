@@ -27,8 +27,9 @@ public enum SteamAppType {
     MODULE(9, "module")
     ;
 
-    private Integer index;
-    private String type;
+    private final Integer index;
+
+    private final String type;
 
     SteamAppType(Integer index, String type) {
         this.index = index;
